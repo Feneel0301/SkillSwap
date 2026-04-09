@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { registerUser, loginUser, getMe } from '../api/auth.api';
+import { updateProfile as updateProfileApi, updateSkills as updateSkillsApi } from '../api/user.api';
 
 const AuthContext = createContext(null);
 
@@ -66,6 +67,34 @@ export function AuthProvider({ children }) {
         }
     }, []);
 
+    const updateProfile = useCallback(async (data) => {
+        try {
+            const response = await updateProfileApi(data);
+            if (response.success) {
+                setUser(response.user);
+                return response.user;
+            }
+        } catch (err) {
+            const message = err.response?.data?.message || 'Update failed.';
+            setError(message);
+            throw new Error(message);
+        }
+    }, []);
+
+    const updateSkills = useCallback(async (data) => {
+        try {
+            const response = await updateSkillsApi(data);
+            if (response.success) {
+                setUser(response.user);
+                return response.user;
+            }
+        } catch (err) {
+            const message = err.response?.data?.message || 'Skills update failed.';
+            setError(message);
+            throw new Error(message);
+        }
+    }, []);
+
     const logout = useCallback(() => {
         localStorage.removeItem(TOKEN_KEY);
         setUser(null);
@@ -81,6 +110,8 @@ export function AuthProvider({ children }) {
         isAuthenticated: !!user,
         register,
         login,
+        updateProfile,
+        updateSkills,
         logout,
         clearError,
     };

@@ -8,8 +8,8 @@ exports.getMyProfile = async (userId) => {
 exports.updateProfile = async (userId, data) => {
   const user = await User.findByIdAndUpdate(
     userId,
-    data,
-    { new: true }
+    { $set: data },
+    { new: true, runValidators: true }
   ).select("-password");
 
   return user;

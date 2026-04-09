@@ -67,8 +67,11 @@ export default function Navbar() {
 
                     {isAuthenticated ? (
                         /* Authenticated: Show user name + logout */
-                        <div className="hidden sm:flex items-center gap-3">
-                            <div className="flex items-center gap-2 bg-primary text-on-primary px-4 py-2 rounded-full font-semibold">
+                        <div
+                            className="hidden sm:flex items-center gap-3 cursor-pointer group"
+                            onClick={() => navigate('/profile')}
+                        >
+                            <div className="flex items-center gap-2 bg-primary text-on-primary px-4 py-2 rounded-full font-semibold group-hover:bg-primary-container transition-colors">
                                 <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold">
                                     {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                                 </div>
@@ -77,7 +80,7 @@ export default function Navbar() {
                                 </span>
                             </div>
                             <button
-                                onClick={handleLogout}
+                                onClick={(e) => { e.stopPropagation(); handleLogout(); }}
                                 className="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors duration-200"
                                 title="Logout"
                             >

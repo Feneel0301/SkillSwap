@@ -36,6 +36,11 @@ const userSchema = new mongoose.Schema({
 
   skillsLearn: [String],
 
+  bio: { type: String, default: "" },
+  title: { type: String, default: "" },
+  location: { type: String, default: "" },
+  profileImage: { type: String, default: "" },
+
   rating: {
     avg: { type: Number, default: 0 },
     count: { type: Number, default: 0 }
