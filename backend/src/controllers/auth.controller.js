@@ -1,34 +1,51 @@
-const User = require("../models/user.model");
-const { generateToken } = require("../utils/jwt");
+const authService = require("../services/auth.service");
 
-// REGISTER
 exports.register = async (req, res) => {
   try {
-    const user = await User.create(req.body);
+    const data = await authService.registerUser(req.body);
 
-    const token = generateToken(user);
-
-    res.status(201).json({ user, token });
+    res.status(201).json({
+      success: true,
+      ...data
+    });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({
+      success: false,
+      message: err.message
+    });
   }
 };
 
-// LOGIN
+
 exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const data = await authService.loginUser(req.body);
 
-    const user = await User.findOne({ email });
-    if (!user) throw new Error("User not found");
-
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) throw new Error("Invalid password");
-
-    const token = generateToken(user);
-
-    res.json({ user, token });
+    res.json({
+      success: true,
+      ...data
+    });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({
+      success: false,
+      message: err.message
+    });
+  }
+};
+
+
+exports.getMe = async (req, res) => {
+  try {
+    const user = await authService.getCurrentUser(req.user.id);
+
+    res.json({
+      success: true,
+      user
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
   }
 };
