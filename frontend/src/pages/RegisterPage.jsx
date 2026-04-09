@@ -1,19 +1,40 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export default function RegisterPage() {
     const navigate = useNavigate();
+    const { register, error, clearError, isAuthenticated } = useAuth();
     const [showPassword, setShowPassword] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
     const [form, setForm] = useState({ name: '', email: '', password: '' });
+
+    // Redirect if already logged in
+    useEffect(() => {
+        if (isAuthenticated) navigate('/', { replace: true });
+    }, [isAuthenticated, navigate]);
+
+    // Clear auth errors when user starts typing
+    useEffect(() => {
+        return () => clearError();
+    }, [clearError]);
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
+        if (error) clearError();
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // TODO: connect to backend
-        console.log('Register:', form);
+        setSubmitting(true);
+        try {
+            await register(form);
+            navigate('/');
+        } catch {
+            // error is already set in context
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
@@ -59,6 +80,14 @@ export default function RegisterPage() {
                                     Join a community of 50k+ curators and learners.
                                 </p>
                             </div>
+
+                            {/* Error Message */}
+                            {error && (
+                                <div className="mb-6 p-4 bg-error-container text-on-error-container rounded-2xl text-sm font-medium flex items-center gap-2 animate-[fadeIn_0.2s_ease-out]">
+                                    <span className="material-symbols-outlined text-lg">error</span>
+                                    {error}
+                                </div>
+                            )}
 
                             {/* Social Logins */}
                             <div className="grid grid-cols-2 gap-4 mb-8">
@@ -110,6 +139,7 @@ export default function RegisterPage() {
                                         name="name"
                                         placeholder="John Doe"
                                         type="text"
+                                        required
                                         value={form.name}
                                         onChange={handleChange}
                                     />
@@ -127,6 +157,7 @@ export default function RegisterPage() {
                                         name="email"
                                         placeholder="name@company.com"
                                         type="email"
+                                        required
                                         value={form.email}
                                         onChange={handleChange}
                                     />
@@ -145,6 +176,8 @@ export default function RegisterPage() {
                                             name="password"
                                             placeholder="••••••••"
                                             type={showPassword ? 'text' : 'password'}
+                                            required
+                                            minLength={6}
                                             value={form.password}
                                             onChange={handleChange}
                                         />
@@ -161,10 +194,11 @@ export default function RegisterPage() {
                                 </div>
                                 <div className="pt-2">
                                     <button
-                                        className="w-full py-4 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold rounded-full shadow-lg shadow-primary/20 hover:shadow-primary/40 active:scale-95 transition-all duration-200"
+                                        className="w-full py-4 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold rounded-full shadow-lg shadow-primary/20 hover:shadow-primary/40 active:scale-95 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
                                         type="submit"
+                                        disabled={submitting}
                                     >
-                                        Get Started
+                                        {submitting ? 'Creating account...' : 'Get Started'}
                                     </button>
                                 </div>
                             </form>

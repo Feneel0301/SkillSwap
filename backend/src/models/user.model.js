@@ -2,20 +2,64 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema({
-  name: String,
-  email: { type: String, unique: true },
-  password: String
+  name: {
+    type: String,
+    required: true
+  },
+
+  email: {
+    type: String,
+    unique: true,
+    required: true,
+    index: true
+  },
+
+  password: {
+    type: String,
+    required: true,
+    select: false // 🔥 prevents sending password by default
+  },
+
+  credits: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+
+  skillsTeach: [{
+    name: String,
+    level: {
+      type: String,
+      enum: ["beginner", "intermediate", "expert"]
+    }
+  }],
+
+  skillsLearn: [String],
+
+  rating: {
+    avg: { type: Number, default: 0 },
+    count: { type: Number, default: 0 }
+  },
+
+  availability: [{
+    date: String,
+    slots: [{
+      time: String,
+      isBooked: { type: Boolean, default: false }
+    }]
+  }]
 }, { timestamps: true });
 
-// hash password
-userSchema.pre("save", async function() {
+
+// 🔐 Hash password
+userSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
   this.password = await bcrypt.hash(this.password, 10);
-  ;
 });
 
-// compare password
-userSchema.methods.comparePassword = function(password) {
+
+// 🔑 Compare password
+userSchema.methods.comparePassword = function (password) {
   return bcrypt.compare(password, this.password);
 };
 
