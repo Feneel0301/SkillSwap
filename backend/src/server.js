@@ -5,7 +5,12 @@ const app = require("./app");
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("DB connected");
+    const host = mongoose.connection.host;
+    const dbName = mongoose.connection.name;
+    console.log(`Successfully connected to MongoDB Host: ${host}, Database: ${dbName}`);
     app.listen(process.env.PORT, () => console.log(`Server running on port ${process.env.PORT}`));
   })
-  .catch(err => console.log(err));
+  .catch(err => {
+    console.error("MongoDB connection error:", err);
+    process.exit(1);
+  });
