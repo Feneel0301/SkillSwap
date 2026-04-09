@@ -3,7 +3,8 @@ require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const mongoose = require("mongoose");
 const app = require("./app");
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose
+  .connect(process.env.MONGO_URI)
   .then(() => {
     const host = mongoose.connection.host;
     const dbName = mongoose.connection.name;
