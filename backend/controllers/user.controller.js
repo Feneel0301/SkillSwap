@@ -1,12 +1,37 @@
 const User = require("../models/User");
 const ApiError = require("../utils/apiError");
 const ApiResponse = require("../utils/apiResponse");
+const { hashPassword, comparePassword } = require("../utils/hash.utils");
 
 const getMe = async (req, res, next) => {
     try {
         return res
             .status(200)
             .json(new ApiResponse(200, req.user, "User profile fetched successfully"));
+    } catch (error) {
+        next(error);
+    }
+};
+
+const changePassword = async (req, res, next) => {
+    try {
+        const { oldPassword, newPassword } = req.body;
+
+        if (!oldPassword || !newPassword) {
+            throw new ApiError(400, "Old and new passwords are required");
+        }
+
+        const user = await User.findById(req.user._id);
+        const isPasswordValid = await comparePassword(oldPassword, user.passwordHash);
+
+        if (!isPasswordValid) {
+            throw new ApiError(401, "Invalid old password");
+        }
+
+        user.passwordHash = await hashPassword(newPassword);
+        await user.save({ validateBeforeSave: false });
+
+        return res.status(200).json(new ApiResponse(200, {}, "Password updated successfully"));
     } catch (error) {
         next(error);
     }
@@ -101,6 +126,7 @@ const getPublicProfile = async (req, res, next) => {
 module.exports = {
     getMe,
     updateMe,
+    changePassword,
     deactivateMe,
     getPublicProfile,
 };

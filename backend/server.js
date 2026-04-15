@@ -5,6 +5,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const connectDB = require("./config/db");
 const errorHandler = require("./utils/errorHandler");
+const loggerMiddleware = require("./middleware/logger.middleware");
 
 const app = express();
 
@@ -12,6 +13,7 @@ const app = express();
 connectDB();
 
 // global middlewares
+app.use(loggerMiddleware);
 app.use(helmet());
 app.use(
   cors({

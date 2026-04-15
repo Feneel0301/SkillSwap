@@ -43,15 +43,27 @@ The backend for SkillSwap, a platform for skill sharing and learning.
 
 - `POST /register`: Register a new user
 - `POST /login`: Login and receive JWT tokens
+- `POST /oauth`: Google OAuth login
+- `POST /logout`: Logout and clear tokens (Protected)
+- `POST /refresh`: Refresh access token
+- `POST /forgot-password`: Request password reset token
+- `POST /reset-password`: Reset password using token
+- `GET /verify-email`: Verify email using token
 
 ### User Profile Management (`/api/v1/users`)
 
 - `GET /me`: Get own profile (Protected)
 - `PUT /me`: Update own profile including `avatarUrl` (Protected)
+- `PATCH /change-password`: Change account password (Protected)
 - `DELETE /me`: Deactivate account (Protected)
 - `GET /:userId`: Public profile information
 
-## Tech Stack
+## Monitoring & Logging
+
+The system includes a custom `loggerMiddleware` that tracks:
+- Concurrent active logins.
+- Request/Response duration and status codes.
+- Potential alerts for high concurrent activity.
 
 - **Framework**: Express.js
 - **Database**: MongoDB (Mongoose)

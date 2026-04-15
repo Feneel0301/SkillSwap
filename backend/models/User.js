@@ -51,8 +51,7 @@ const userSchema = new mongoose.Schema(
     },
     oauthProvider: {
       type: String,
-      enum: ["google", "github", null],
-      default: null,
+      enum: ["google", "github"],
     },
     oauthId: String,
     isActive: {
