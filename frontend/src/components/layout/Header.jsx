@@ -1,16 +1,25 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   SkillSwapLogo,
   WalletIcon,
 } from '../Icons';
 
 export default function Header() {
+  const navigate = useNavigate();
+  const userData = localStorage.getItem('user');
+  const user = userData ? JSON.parse(userData) : null;
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    navigate('/login');
+  };
+
   return (
     <header className="h-16 px-8 flex items-center justify-between border-b border-slate-200 bg-white sticky top-0 z-50">
       <div className="flex items-center gap-12">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
+        <Link to="/home" className="flex items-center gap-2">
           <SkillSwapLogo className="w-8 h-8" />
           <span className="text-xl font-bold tracking-tight text-blue-700">
             SkillSwap
@@ -40,16 +49,28 @@ export default function Header() {
           <WalletIcon className="w-4 h-4 text-orange-600" />
           1,240
         </div>
-        <button className="w-8 h-8 rounded-md bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition-colors">
-          <WalletIcon className="w-5 h-5 flex-shrink-0" />
-        </button>
-        <div className="flex items-center gap-2 cursor-pointer ml-2">
-          <img
-            src="https://ui-avatars.com/api/?name=Learner&background=F59E0B&color=fff"
-            alt="Profile"
-            className="w-8 h-8 rounded-full"
-          />
-          <span className="text-sm font-bold text-slate-700">Profile</span>
+        
+        <div className="flex items-center gap-3 ml-2 border-l pl-4 border-slate-200">
+          {user ? (
+            <div className="flex items-center gap-3">
+              <div className="text-right hidden sm:block">
+                <p className="text-sm font-bold text-slate-900 leading-none mb-0.5">{user.displayName}</p>
+                <button 
+                  onClick={handleLogout}
+                  className="text-[10px] font-bold text-slate-400 hover:text-red-500 uppercase tracking-wider transition-colors"
+                >
+                  Logout
+                </button>
+              </div>
+              <img
+                src={user.avatarUrl || `https://ui-avatars.com/api/?name=${user.displayName}&background=3b82f6&color=fff`}
+                alt="Profile"
+                className="w-9 h-9 rounded-full border border-slate-100 shadow-sm"
+              />
+            </div>
+          ) : (
+            <Link to="/login" className="text-sm font-bold text-blue-600 hover:text-blue-700">Sign In</Link>
+          )}
         </div>
       </div>
     </header>
