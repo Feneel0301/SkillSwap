@@ -44,6 +44,13 @@ The backend for SkillSwap, a platform for skill sharing and learning.
 - `POST /register`: Register a new user
 - `POST /login`: Login and receive JWT tokens
 
+### User Profile Management (`/api/v1/users`)
+
+- `GET /me`: Get own profile (Protected)
+- `PUT /me`: Update own profile including `avatarUrl` (Protected)
+- `DELETE /me`: Deactivate account (Protected)
+- `GET /:userId`: Public profile information
+
 ## Tech Stack
 
 - **Framework**: Express.js

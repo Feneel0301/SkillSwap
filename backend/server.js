@@ -25,6 +25,7 @@ app.use(cookieParser());
 
 // routes
 app.use("/api/v1/auth", require("./routes/auth.routes"));
+app.use("/api/v1/users", require("./routes/user.routes"));
 
 // test route
 app.get("/", (req, res) => {
