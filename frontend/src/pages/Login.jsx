@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useGoogleOneTapLogin, GoogleLogin } from '@react-oauth/google';
+import api from '../api/axios';
 import {
   GoogleIcon,
   GitHubIcon,
@@ -10,7 +12,64 @@ import {
 } from '../components/Icons';
 
 export default function Login() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  // Google One-Tap Login
+  useGoogleOneTapLogin({
+    onSuccess: async (credentialResponse) => {
+      try {
+        const res = await api.post('/auth/oauth', { token: credentialResponse.credential });
+        if (res.data.success) {
+          localStorage.setItem('user', JSON.stringify(res.data.data.user));
+          navigate('/home');
+        }
+      } catch (err) {
+        setError(err.response?.data?.message || 'Google login failed');
+      }
+    },
+    onError: () => setError('Google One-Tap failed'),
+  });
+
+  const handleGoogleSuccess = async (response) => {
+    try {
+      const res = await api.post('/auth/oauth', { token: response.credential });
+      if (res.data.success) {
+        localStorage.setItem('user', JSON.stringify(res.data.data.user));
+        navigate('/home');
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Google login failed');
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setError('');
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+    try {
+      const res = await api.post('/auth/login', formData);
+      if (res.data.success) {
+        localStorage.setItem('user', JSON.stringify(res.data.data.user));
+        navigate('/home');
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col relative overflow-hidden font-sans">
@@ -49,15 +108,16 @@ export default function Login() {
             <p className="text-slate-500">Pick up right where you left off</p>
           </div>
 
-          <div className="space-y-3 mb-8">
-            <button className="w-full flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 transition-colors py-3.5 rounded-full text-sm font-bold text-slate-800">
-              <GoogleIcon className="w-5 h-5" />
-              Continue with Google
-            </button>
-            <button className="w-full flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 transition-colors py-3.5 rounded-full text-sm font-bold text-slate-800">
-              <GitHubIcon className="w-5 h-5" />
-              Continue with GitHub
-            </button>
+          <div className="flex justify-center mb-8">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => setError('Google login failed')}
+              useOneTap
+              theme="outline"
+              size="large"
+              shape="pill"
+              width="360"
+            />
           </div>
 
           <div className="flex items-center gap-4 mb-8">
@@ -68,13 +128,19 @@ export default function Login() {
             <div className="h-px bg-slate-200 flex-1"></div>
           </div>
 
-          <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+          {error && <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-xl border border-red-100">{error}</div>}
+
+          <form className="space-y-5" onSubmit={handleSubmit}>
             <div className="space-y-1.5">
               <label className="text-sm font-bold text-slate-700 tracking-wide">
                 Email address
               </label>
               <input
                 type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
                 placeholder="name@example.com"
                 className="w-full bg-slate-100 border border-transparent focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all rounded-full px-5 py-3.5 text-slate-900 placeholder:text-slate-400 outline-none"
               />
@@ -94,6 +160,10 @@ export default function Login() {
               </div>
               <div className="relative">
                 <input
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
                   type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
                   className="w-full bg-slate-100 border border-transparent focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all rounded-full px-5 py-3.5 pr-12 text-slate-900 placeholder:text-slate-400 outline-none tracking-widest font-mono"
@@ -114,9 +184,10 @@ export default function Login() {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full py-4 mt-2 transition-colors shadow-lg shadow-blue-600/20 text-lg"
+              disabled={isLoading}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full py-4 mt-2 transition-colors shadow-lg shadow-blue-600/20 text-lg disabled:opacity-50"
             >
-              Sign In
+              {isLoading ? 'Signing In...' : 'Sign In'}
             </button>
           </form>
 
