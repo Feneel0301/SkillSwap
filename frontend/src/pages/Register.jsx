@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useGoogleOneTapLogin, GoogleLogin } from '@react-oauth/google';
 import api from '../api/axios';
 import {
   GoogleIcon,
@@ -23,6 +24,34 @@ export default function Register() {
   const [error, setError] = useState('');
   const [showOtpPopup, setShowOtpPopup] = useState(false);
   const [otp, setOtp] = useState('');
+
+  // Google One-Tap Login
+  useGoogleOneTapLogin({
+    onSuccess: async (credentialResponse) => {
+      try {
+        const res = await api.post('/auth/oauth', { token: credentialResponse.credential });
+        if (res.data.success) {
+          localStorage.setItem('user', JSON.stringify(res.data.data.user));
+          navigate('/home');
+        }
+      } catch (err) {
+        setError(err.response?.data?.message || 'Google signup failed');
+      }
+    },
+    onError: () => setError('Google One-Tap failed'),
+  });
+
+  const handleGoogleSuccess = async (response) => {
+    try {
+      const res = await api.post('/auth/oauth', { token: response.credential });
+      if (res.data.success) {
+        localStorage.setItem('user', JSON.stringify(res.data.data.user));
+        navigate('/home');
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Google signup failed');
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -84,15 +113,16 @@ export default function Register() {
             Join a community of 50k+ curators and learners.
           </p>
 
-          <div className="flex gap-4 mb-8">
-            <button className="flex-1 flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 transition-colors py-3 rounded-full text-sm font-semibold text-slate-700">
-              <GoogleIcon className="w-4 h-4" />
-              Google
-            </button>
-            <button className="flex-1 flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 transition-colors py-3 rounded-full text-sm font-semibold text-slate-700">
-              <GitHubIcon className="w-5 h-5" />
-              GitHub
-            </button>
+          <div className="flex justify-center mb-8">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => setError('Google signup failed')}
+              useOneTap
+              theme="outline"
+              size="large"
+              shape="pill"
+              width="360"
+            />
           </div>
 
           <div className="flex items-center gap-4 mb-8">
