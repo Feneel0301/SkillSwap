@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   SkillSwapLogo,
   WalletIcon,
@@ -7,6 +7,7 @@ import {
 
 export default function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
   const userData = localStorage.getItem('user');
   const user = userData ? JSON.parse(userData) : null;
 
@@ -29,16 +30,34 @@ export default function Header() {
         {/* Nav Links */}
         <nav className="flex items-center gap-8 h-full">
           <Link
-            to="/home"
-            className="text-sm font-semibold text-blue-700 h-16 flex items-center border-b-2 border-blue-700"
-          >
-            Home
-          </Link>
-          <Link
             to="/marketplace"
-            className="text-sm font-semibold text-slate-500 hover:text-slate-900 h-16 flex items-center border-b-2 border-transparent transition-colors"
+            className={`text-sm font-semibold h-16 flex items-center border-b-2 transition-colors ${
+              location.pathname === '/marketplace' 
+                ? 'text-blue-700 border-blue-700' 
+                : 'text-slate-500 hover:text-slate-900 border-transparent'
+            }`}
           >
             Marketplace
+          </Link>
+          <Link
+            to="/sessions"
+            className={`text-sm font-semibold h-16 flex items-center border-b-2 transition-colors ${
+              location.pathname === '/sessions' 
+                ? 'text-blue-700 border-blue-700' 
+                : 'text-slate-500 hover:text-slate-900 border-transparent'
+            }`}
+          >
+            Sessions
+          </Link>
+          <Link
+            to="/profile"
+            className={`text-sm font-semibold h-16 flex items-center border-b-2 transition-colors ${
+              location.pathname === '/profile' 
+                ? 'text-blue-700 border-blue-700' 
+                : 'text-slate-500 hover:text-slate-900 border-transparent'
+            }`}
+          >
+            Profile
           </Link>
         </nav>
       </div>

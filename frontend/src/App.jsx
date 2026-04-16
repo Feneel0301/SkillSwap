@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Home from './pages/Home';
+import Profile from './pages/Profile';
 
 const ProtectedRoute = ({ children }) => {
   const user = localStorage.getItem('user');
@@ -23,6 +24,11 @@ function App() {
         <Route path="/home" element={
           <ProtectedRoute>
             <Home />
+          </ProtectedRoute>
+        } />
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <Profile />
           </ProtectedRoute>
         } />
         <Route path="/register" element={
