@@ -35,7 +35,7 @@ const registerInit = async (req, res, next) => {
         await OTP.findOneAndUpdate(
             { email },
             { email, passwordHash: hashedPassword, displayName, otp, createdAt: Date.now() },
-            { upsert: true, new: true, setDefaultsOnInsert: true }
+            { upsert: true, returnDocument: 'after', setDefaultsOnInsert: true }
         );
 
         await sendOTP(email, otp);

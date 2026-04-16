@@ -74,7 +74,7 @@ const updateMe = async (req, res, next) => {
                     sessionRate
                 },
             },
-            { new: true, runValidators: true }
+            { returnDocument: 'after', runValidators: true }
         ).select("-passwordHash");
 
         if (!user) {

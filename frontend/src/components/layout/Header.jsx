@@ -1,12 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   SkillSwapLogo,
   WalletIcon,
   MenuIcon
 } from '../Icons';
 
-export default function Header({ onMenuToggle }) {
+export default function Header() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const userData = localStorage.getItem('user');
   const user = userData ? JSON.parse(userData) : null;
 
@@ -33,15 +35,43 @@ export default function Header({ onMenuToggle }) {
         <nav className="hidden lg:flex items-center gap-8 h-full">
           <Link
             to="/home"
-            className="text-sm font-semibold text-blue-700 h-16 flex items-center border-b-2 border-blue-700"
+            className={`text-sm font-semibold h-16 flex items-center border-b-2 transition-colors ${
+              location.pathname === '/home' 
+                ? 'text-blue-700 border-blue-700' 
+                : 'text-slate-500 hover:text-slate-900 border-transparent'
+            }`}
           >
             Home
           </Link>
           <Link
             to="/marketplace"
-            className="text-sm font-semibold text-slate-500 hover:text-slate-900 h-16 flex items-center border-b-2 border-transparent transition-colors"
+            className={`text-sm font-semibold h-16 flex items-center border-b-2 transition-colors ${
+              location.pathname === '/marketplace' 
+                ? 'text-blue-700 border-blue-700' 
+                : 'text-slate-500 hover:text-slate-900 border-transparent'
+            }`}
           >
             Marketplace
+          </Link>
+          <Link
+            to="/sessions"
+            className={`text-sm font-semibold h-16 flex items-center border-b-2 transition-colors ${
+              location.pathname === '/sessions' 
+                ? 'text-blue-700 border-blue-700' 
+                : 'text-slate-500 hover:text-slate-900 border-transparent'
+            }`}
+          >
+            Sessions
+          </Link>
+          <Link
+            to="/messages"
+            className={`text-sm font-semibold h-16 flex items-center border-b-2 transition-colors ${
+              location.pathname === '/messages' 
+                ? 'text-blue-700 border-blue-700' 
+                : 'text-slate-500 hover:text-slate-900 border-transparent'
+            }`}
+          >
+            Messages
           </Link>
         </nav>
       </div>
