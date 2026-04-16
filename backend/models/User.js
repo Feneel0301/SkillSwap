@@ -66,6 +66,29 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    location: {
+      type: String,
+      default: "Earth",
+    },
+    skillsTeach: {
+      type: [String],
+      default: [],
+    },
+    skillsLearn: {
+      type: [String],
+      default: [],
+    },
+    sessionRate: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    availability: [
+      {
+        date: String, // ISO date string "YYYY-MM-DD"
+        slots: [String], // e.g. ["09:00 AM", "11:30 AM"]
+      }
+    ],
     emailVerifyToken: String,
     passwordResetToken: String,
     passwordResetExpiry: Date,
