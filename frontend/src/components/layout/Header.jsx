@@ -6,7 +6,7 @@ import {
   MenuIcon
 } from '../Icons';
 
-export default function Header() {
+export default function Header({ onMenuToggle }) {
   const navigate = useNavigate();
   const location = useLocation();
   const userData = localStorage.getItem('user');
