@@ -60,7 +60,7 @@ const updateMe = async (req, res, next) => {
                     avatarUrl,
                 },
             },
-            { new: true, runValidators: true }
+            { returnDocument: 'after', runValidators: true }
         ).select("-passwordHash");
 
         if (!user) {
