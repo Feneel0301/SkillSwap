@@ -182,7 +182,7 @@ const Marketplace = () => {
                   </div>
 
                   <button 
-                    onClick={() => navigate('/profile')}
+                    onClick={() => navigate(`/public-profile/${mentor.id}`)}
                     className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3.5 rounded-2xl transition-all shadow-md shadow-blue-600/10 active:scale-95 text-sm"
                   >
                     View Profile

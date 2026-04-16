@@ -3,6 +3,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
+import PublicProfile from './pages/PublicProfile';
 import Landing from './pages/Landing';
 import Marketplace from './pages/Marketplace';
 
@@ -40,6 +41,11 @@ function App() {
         <Route path="/profile" element={
           <ProtectedRoute>
             <Profile />
+          </ProtectedRoute>
+        } />
+        <Route path="/public-profile/:userId" element={
+          <ProtectedRoute>
+            <PublicProfile />
           </ProtectedRoute>
         } />
         <Route path="/marketplace" element={
