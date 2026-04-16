@@ -1,7 +1,5 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import Header from '../components/layout/Header';
-import Sidebar from '../components/layout/Sidebar';
+import Layout from '../components/layout/Layout';
 import HeroCredits from '../components/home/HeroCredits';
 import MentorCard from '../components/home/MentorCard';
 import SessionCard from '../components/home/SessionCard';
@@ -71,12 +69,8 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col">
-      <Header />
-      <div className="flex-1 flex w-full max-w-[1440px] mx-auto">
-        <Sidebar />
-        
-        <main className="flex-1 p-8 space-y-12">
+    <Layout>
+        <main className="space-y-12">
           <section>
             <HeroCredits />
           </section>
@@ -109,7 +103,6 @@ export default function Home() {
             </div>
           </section>
         </main>
-      </div>
-    </div>
+    </Layout>
   );
 }

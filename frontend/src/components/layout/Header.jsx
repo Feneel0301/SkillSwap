@@ -1,33 +1,36 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   SkillSwapLogo,
   WalletIcon,
+  MenuIcon
 } from '../Icons';
 
-export default function Header() {
-  const navigate = useNavigate();
+export default function Header({ onMenuToggle }) {
   const userData = localStorage.getItem('user');
   const user = userData ? JSON.parse(userData) : null;
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    navigate('/login');
-  };
-
   return (
-    <header className="h-16 px-8 flex items-center justify-between border-b border-slate-200 bg-white sticky top-0 z-50">
-      <div className="flex items-center gap-12">
+    <header className="h-16 px-4 md:px-8 flex items-center justify-between border-b border-slate-200 bg-white sticky top-0 z-50">
+      <div className="flex items-center gap-4 lg:gap-12">
+        {/* Hamburger Menu Toggle - Mobile Only */}
+        <button 
+          onClick={onMenuToggle}
+          className="lg:hidden p-2 hover:bg-slate-100 rounded-xl transition-colors"
+        >
+          <MenuIcon className="w-6 h-6 text-slate-600" />
+        </button>
+
         {/* Logo */}
         <Link to="/home" className="flex items-center gap-2">
           <SkillSwapLogo className="w-8 h-8" />
-          <span className="text-xl font-bold tracking-tight text-blue-700">
+          <span className="text-xl font-bold tracking-tight text-blue-700 hidden xs:block">
             SkillSwap
           </span>
         </Link>
 
-        {/* Nav Links */}
-        <nav className="flex items-center gap-8 h-full">
+        {/* Desktop Nav Links - Hidden on Mobile */}
+        <nav className="hidden lg:flex items-center gap-8 h-full">
           <Link
             to="/home"
             className="text-sm font-semibold text-blue-700 h-16 flex items-center border-b-2 border-blue-700"
@@ -44,30 +47,25 @@ export default function Header() {
       </div>
 
       {/* Right Actions */}
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2 bg-[#f0eee4] px-4 py-2 rounded-full text-sm font-bold text-slate-800">
+      <div className="flex items-center gap-2 md:gap-4">
+        <div className="flex items-center gap-2 bg-[#f0eee4] px-3 md:px-4 py-2 rounded-full text-xs md:text-sm font-bold text-slate-800">
           <WalletIcon className="w-4 h-4 text-orange-600" />
-          1,240
+          <span className="hidden xs:inline">1,240</span>
         </div>
         
-        <div className="flex items-center gap-3 ml-2 border-l pl-4 border-slate-200">
+        <div className="flex items-center gap-3 ml-1 md:ml-2 border-l pl-2 md:pl-4 border-slate-200">
           {user ? (
-            <div className="flex items-center gap-3">
+            <Link to="/profile" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <div className="text-right hidden sm:block">
-                <p className="text-sm font-bold text-slate-900 leading-none mb-0.5">{user.displayName}</p>
-                <button 
-                  onClick={handleLogout}
-                  className="text-[10px] font-bold text-slate-400 hover:text-red-500 uppercase tracking-wider transition-colors"
-                >
-                  Logout
-                </button>
+                <p className="text-sm font-bold text-slate-900 leading-none">{user.displayName}</p>
+                <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-wider">Premium Member</p>
               </div>
               <img
                 src={user.avatarUrl || `https://ui-avatars.com/api/?name=${user.displayName}&background=3b82f6&color=fff`}
                 alt="Profile"
-                className="w-9 h-9 rounded-full border border-slate-100 shadow-sm"
+                className="w-8 h-8 md:w-9 md:h-9 rounded-full border border-slate-100 shadow-sm"
               />
-            </div>
+            </Link>
           ) : (
             <Link to="/login" className="text-sm font-bold text-blue-600 hover:text-blue-700">Sign In</Link>
           )}

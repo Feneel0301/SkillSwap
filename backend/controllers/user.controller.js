@@ -43,8 +43,17 @@ const updateMe = async (req, res, next) => {
             throw new ApiError(400, "No data provided for update. Please send text fields or an avatar file.");
         }
 
-        const { displayName, bio } = req.body;
+        let { displayName, bio, location, skillsTeach, skillsLearn, availability, sessionRate } = req.body;
         let { avatarUrl } = req.body;
+
+        // Parse JSON strings if they come from multipart/form-data
+        try {
+            if (typeof skillsTeach === 'string') skillsTeach = JSON.parse(skillsTeach);
+            if (typeof skillsLearn === 'string') skillsLearn = JSON.parse(skillsLearn);
+            if (typeof availability === 'string') availability = JSON.parse(availability);
+        } catch (e) {
+            console.error("Error parsing profile fields:", e);
+        }
 
         // If a file was uploaded to Cloudinary, use its secure_url
         if (req.file && req.file.path) {
@@ -58,6 +67,11 @@ const updateMe = async (req, res, next) => {
                     displayName,
                     bio,
                     avatarUrl,
+                    location,
+                    skillsTeach,
+                    skillsLearn,
+                    availability,
+                    sessionRate
                 },
             },
             { new: true, runValidators: true }

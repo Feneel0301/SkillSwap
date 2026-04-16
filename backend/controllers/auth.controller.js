@@ -80,6 +80,8 @@ const registerVerify = async (req, res, next) => {
         const options = {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/",
         };
 
         return res
@@ -130,6 +132,8 @@ const login = async (req, res, next) => {
         const options = {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/",
         };
 
         return res
@@ -189,6 +193,8 @@ const googleOauth = async (req, res, next) => {
         const options = {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/",
         };
 
         return res
@@ -222,6 +228,8 @@ const logout = async (req, res, next) => {
         const options = {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/",
         };
 
         return res
@@ -265,6 +273,8 @@ const refresh = async (req, res, next) => {
         const options = {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/",
         };
 
         return res
