@@ -30,6 +30,16 @@ export default function Header() {
         {/* Nav Links */}
         <nav className="flex items-center gap-8 h-full">
           <Link
+            to="/home"
+            className={`text-sm font-semibold h-16 flex items-center border-b-2 transition-colors ${
+              location.pathname === '/home' 
+                ? 'text-blue-700 border-blue-700' 
+                : 'text-slate-500 hover:text-slate-900 border-transparent'
+            }`}
+          >
+            Home
+          </Link>
+          <Link
             to="/marketplace"
             className={`text-sm font-semibold h-16 flex items-center border-b-2 transition-colors ${
               location.pathname === '/marketplace' 
@@ -50,14 +60,14 @@ export default function Header() {
             Sessions
           </Link>
           <Link
-            to="/profile"
+            to="/messages"
             className={`text-sm font-semibold h-16 flex items-center border-b-2 transition-colors ${
-              location.pathname === '/profile' 
+              location.pathname === '/messages' 
                 ? 'text-blue-700 border-blue-700' 
                 : 'text-slate-500 hover:text-slate-900 border-transparent'
             }`}
           >
-            Profile
+            Messages
           </Link>
         </nav>
       </div>
