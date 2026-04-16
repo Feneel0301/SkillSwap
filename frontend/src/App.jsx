@@ -3,6 +3,8 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
+import Landing from './pages/Landing';
+import Marketplace from './pages/Marketplace';
 
 const ProtectedRoute = ({ children }) => {
   const user = localStorage.getItem('user');
@@ -38,6 +40,11 @@ function App() {
         <Route path="/profile" element={
           <ProtectedRoute>
             <Profile />
+          </ProtectedRoute>
+        } />
+        <Route path="/marketplace" element={
+          <ProtectedRoute>
+            <Marketplace />
           </ProtectedRoute>
         } />
         <Route path="/register" element={
